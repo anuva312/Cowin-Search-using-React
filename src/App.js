@@ -35,7 +35,11 @@ class App extends React.Component {
         states = data.states.map((state) => {
           return { state_name: state.state_name, state_id: state.state_id };
         });
-        this.setState({ state_list: states });
+        this.setState({
+          state_list: data.states.map((state) => {
+            return { label: state.state_name, value: state.state_id };
+          }),
+        });
         console.log(this.state.state_list);
       })
       .catch((err) => {
@@ -73,10 +77,10 @@ class App extends React.Component {
   }
 
   handleChange(changeObject) {
-    console.log(changeObject);
     this.setState(changeObject, () => {
+      console.log(this.state.selected_state.label);
       const state = states.filter((obj) => {
-        return obj.state_name === this.state.selected_state;
+        return obj.state_name === this.state.selected_state.label;
       });
       console.log(state[0].state_id);
       this.getDistricts(state[0].state_id);
@@ -86,30 +90,21 @@ class App extends React.Component {
   render() {
     return (
       <div>
-        {/* FIXME: Control not even going inside onChange*/}
         <label>Choose a State</label>
-        <select
-          onChange={(e) => {
-            console.log("State Chosen ", e.target.value);
-            this.handleChange({ selected_state: e.target.value });
-            // this.setState({ selected_state: e.target.value });
-            // console.log(this.state.selected_state);
+
+        <Select
+          placeholder={this.state.selected_state.label}
+          onChange={(selectedOption) => {
+            console.log("State Chosen ", selectedOption);
+            this.handleChange({ selected_state: selectedOption });
           }}
-        >
-          {this.state.state_list.map((obj) => {
-            return (
-              <option key={obj.state_id} value={obj.state_name}>
-                {obj.state_name}
-              </option>
-            );
-          })}
-        </select>
-        {/* FIXME: Control not even going inside onChange*/}
+          options={this.state.state_list}
+        />
 
         <label>Choose a District</label>
 
         <Select
-          value="Choose a district"
+          placeholder={this.state.selected_state.label}
           onChange={(selectedOption) => {
             this.setState({ selectedOption });
             console.log(`District selected:`, selectedOption);
