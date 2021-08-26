@@ -1,0 +1,17 @@
+select {
+  display: flex;
+  flex-flow: column;
+  justify-content: flex-start;
+  max-width: 50%;
+  height: 100%;
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+label {
+  margin-bottom: 1rem;
+}
+
+.selectOptions {
+  color: black;
+}

@@ -1,8 +1,10 @@
 import React from "react";
 import { StyledButton } from "./styles.js";
-import { Dropdown, Option } from "./components";
+import "./styles.css";
+import Select from "react-select";
 
 let states = [];
+let districts = [];
 
 class App extends React.Component {
   constructor(props) {
@@ -18,7 +20,6 @@ class App extends React.Component {
       dose1: "",
       dose2: "",
     };
-    this.handleChange = this.handleChange.bind(this);
   }
 
   componentDidMount() {
@@ -42,20 +43,57 @@ class App extends React.Component {
       });
   }
 
+  getDistricts(state_id) {
+    console.log("Inside getDistricts");
+    let url = `https://cdn-api.co-vin.in/api/v2/admin/location/districts/${state_id}`;
+    console.log(url);
+    fetch(url, {
+      method: "GET",
+      headers: {
+        accept: "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        districts = data[0];
+        console.log(districts);
+        this.setState({
+          district_list: data.districts.map((state) => {
+            return {
+              label: state.district_name,
+              value: state.district_id,
+            };
+          }),
+        });
+        console.log(this.state.district_list);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
   handleChange(changeObject) {
     console.log(changeObject);
-    this.setState(changeObject);
+    this.setState(changeObject, () => {
+      const state = states.filter((obj) => {
+        return obj.state_name === this.state.selected_state;
+      });
+      console.log(state[0].state_id);
+      this.getDistricts(state[0].state_id);
+    });
   }
 
   render() {
     return (
       <div>
         {/* FIXME: Control not even going inside onChange*/}
+        <label>Choose a State</label>
         <select
-          formlabel="Choose a State"
           onChange={(e) => {
-            console.log("State Chosen");
+            console.log("State Chosen ", e.target.value);
             this.handleChange({ selected_state: e.target.value });
+            // this.setState({ selected_state: e.target.value });
+            // console.log(this.state.selected_state);
           }}
         >
           {this.state.state_list.map((obj) => {
@@ -66,20 +104,19 @@ class App extends React.Component {
             );
           })}
         </select>
-
         {/* FIXME: Control not even going inside onChange*/}
-        <Dropdown
-          formLabel="Choose a District"
-          onChange={(e) => {
-            this.handleChange({ selected_district: e.target.value });
+
+        <label>Choose a District</label>
+
+        <Select
+          value="Choose a district"
+          onChange={(selectedOption) => {
+            this.setState({ selectedOption });
+            console.log(`District selected:`, selectedOption);
           }}
-        >
-          <Option selected value="Click to see districts" />
-          <Option value="Option 1" />
-          <Option value="Option 2" />
-          <Option value="Option 3" />
-        </Dropdown>
-        <p>You selected {this.state.selected_district} </p>
+          options={this.state.district_list}
+        />
+
         <StyledButton
           type="submit"
           value="Submit"
