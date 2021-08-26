@@ -43,19 +43,19 @@ class App extends React.Component {
   }
 
   handleChange(changeObject) {
+    console.log(changeObject);
     this.setState(changeObject);
-    // console.log(changeObject);
   }
 
   render() {
     return (
       <div>
         {/* FIXME: Control not even going inside onChange*/}
-        <Dropdown
-          formLabel="Choose a State"
+        <select
+          formlabel="Choose a State"
           onChange={(e) => {
             console.log("State Chosen");
-            this.handleChange({ selectedState: e.target.value });
+            this.handleChange({ selected_state: e.target.value });
           }}
         >
           {this.state.state_list.map((obj) => {
@@ -65,8 +65,7 @@ class App extends React.Component {
               </option>
             );
           })}
-        </Dropdown>
-        <p>You selected {this.state.selected_district} </p>
+        </select>
 
         {/* FIXME: Control not even going inside onChange*/}
         <Dropdown
