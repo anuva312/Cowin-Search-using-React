@@ -1,5 +1,7 @@
 import React from "react";
-import { ChangeSelection } from "./components";
+import { StyledButton } from "./styles.js";
+
+import { Dropdown, Option } from "./components";
 
 let state_names = [];
 
@@ -16,6 +18,7 @@ class App extends React.Component {
       dose1: "",
       dose2: "",
     };
+    this.handleChange = this.handleChange.bind(this);
   }
 
   componentDidMount() {
@@ -43,8 +46,46 @@ class App extends React.Component {
       });
   }
 
+  handleChange(changeObject) {
+    this.setState(changeObject);
+    // console.log(changeObject);
+  }
+
   render() {
-    return <ChangeSelection />;
+    return (
+      <div>
+        <Dropdown
+          formLabel="Choose a State"
+          onChange={(e) => {
+            console.log("State Chosen");
+            this.handleChange({ selectedState: e.target.value });
+          }}
+        >
+          <Option selected value="Click to see states" />
+          <Option value="Option 1" />
+          <Option value="Option 2" />
+          <Option value="Option 3" />
+        </Dropdown>
+        <p>You selected {this.state.selected_district} </p>
+        <Dropdown
+          formLabel="Choose a District"
+          onChange={(e) => {
+            this.handleChange({ selected_district: e.target.value });
+          }}
+        >
+          <Option selected value="Click to see options" />
+          <Option value="Option 1" />
+          <Option value="Option 2" />
+          <Option value="Option 3" />
+        </Dropdown>
+        <p>You selected {this.state.selected_district} </p>
+        <StyledButton
+          type="submit"
+          value="Submit"
+          onClick={this.handleSelect}
+        />
+      </div>
+    );
   }
 }
 
