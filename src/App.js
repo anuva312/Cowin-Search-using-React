@@ -1,14 +1,14 @@
 import React from "react";
 import { StyledButton } from "./styles.js";
-
 import { Dropdown, Option } from "./components";
 
-let state_names = [];
+let states = [];
 
 class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      state_list: [],
       selected_state: "",
       district_list: [],
       selected_district: "",
@@ -31,15 +31,11 @@ class App extends React.Component {
     })
       .then((response) => response.json())
       .then((data) => {
-        // console.log(
-        //   data.states.map((state) => {
-        //     return state.state_name;
-        //   })
-        // );
-        state_names = data.states.map((state) => {
-          return state.state_name;
+        states = data.states.map((state) => {
+          return { state_name: state.state_name, state_id: state.state_id };
         });
-        console.log(state_names);
+        this.setState({ state_list: states });
+        console.log(this.state.state_list);
       })
       .catch((err) => {
         console.log(err);
@@ -54,6 +50,7 @@ class App extends React.Component {
   render() {
     return (
       <div>
+        {/* FIXME: Control not even going inside onChange*/}
         <Dropdown
           formLabel="Choose a State"
           onChange={(e) => {
@@ -61,19 +58,24 @@ class App extends React.Component {
             this.handleChange({ selectedState: e.target.value });
           }}
         >
-          <Option selected value="Click to see states" />
-          <Option value="Option 1" />
-          <Option value="Option 2" />
-          <Option value="Option 3" />
+          {this.state.state_list.map((obj) => {
+            return (
+              <option key={obj.state_id} value={obj.state_name}>
+                {obj.state_name}
+              </option>
+            );
+          })}
         </Dropdown>
         <p>You selected {this.state.selected_district} </p>
+
+        {/* FIXME: Control not even going inside onChange*/}
         <Dropdown
           formLabel="Choose a District"
           onChange={(e) => {
             this.handleChange({ selected_district: e.target.value });
           }}
         >
-          <Option selected value="Click to see options" />
+          <Option selected value="Click to see districts" />
           <Option value="Option 1" />
           <Option value="Option 2" />
           <Option value="Option 3" />
