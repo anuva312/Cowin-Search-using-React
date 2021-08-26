@@ -1,12 +1,15 @@
 import React from "react";
 import { ChangeSelection } from "./components";
 
+let state_names = [];
+
 class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      state_names: [],
-      districts: [],
+      selected_state: "",
+      district_list: [],
+      selected_district: "",
       hospital_name: "",
       address: "",
       availability: "",
@@ -25,18 +28,15 @@ class App extends React.Component {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(
-          data.states.map((state) => {
-            return state.state_name;
-          })
-        );
-        // console.log(typeof [data]);
-        // console.log(data.states);
-        this.setState({
-          state_names: data.states.map((state) => {
-            return state.state_name;
-          }),
+        // console.log(
+        //   data.states.map((state) => {
+        //     return state.state_name;
+        //   })
+        // );
+        state_names = data.states.map((state) => {
+          return state.state_name;
         });
+        console.log(state_names);
       })
       .catch((err) => {
         console.log(err);

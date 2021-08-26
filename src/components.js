@@ -10,8 +10,8 @@ import {
 export function Dropdown(props) {
   return (
     <DropdownWrapper action={props.action}>
-      <StyledLabel htmlFor="services">{props.formLabel}</StyledLabel>
-      <StyledSelect id="services" name="services">
+      <StyledLabel htmlFor="options">{props.formLabel}</StyledLabel>
+      <StyledSelect id="options" name="options">
         {props.children}
       </StyledSelect>
     </DropdownWrapper>
@@ -27,16 +27,13 @@ export function Option(props) {
 export function ChangeSelection() {
   const [optionValue, setOptionValue] = useState("hello");
   const handleSelect = (e) => {
+    console.log("inside handleselect");
     console.log(e.target.value);
     setOptionValue(e.target.value);
   };
   return (
     <div>
-      <Dropdown
-        formLabel="Choose a State"
-        buttonText="Select State"
-        onChange={handleSelect}
-      >
+      <Dropdown formLabel="Choose a State" onChange={handleSelect}>
         <Option selected value="Click to see states" />
         <Option value="Option 1" />
         <Option value="Option 2" />
