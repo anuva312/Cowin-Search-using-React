@@ -1,14 +1,11 @@
 import React, { useState } from "react";
-import { StyledButton } from "./styles.js";
 import "./styles.css";
 import Select from "react-select";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 let states = [];
-let districts = [];
 let selected_date = new Date().toLocaleDateString("en-GB").split(",")[0];
-console.log(selected_date);
 
 const SelectDate = () => {
   const [startDate, setDate] = useState(new Date());
@@ -17,9 +14,8 @@ const SelectDate = () => {
       selected={startDate}
       onChange={(date) => {
         selected_date = date.toLocaleString("en-GB").split(",")[0];
-        console.log(selected_date);
+        // console.log(selected_date);
         setDate(date);
-        console.log();
       }}
       dateFormat="dd/MM/yyyy"
     />
@@ -41,10 +37,11 @@ class Sessions extends React.Component {
           </tr>
         </thead>
         <tbody>
+          {/* TODO: If no info show a message saying so */}
           {this.props.info &&
             this.props.info.map((hospital) => {
               return (
-                <tr key={hospital.name}>
+                <tr key={hospital.session_id}>
                   <td>{hospital.name}</td>
                   <td>{hospital.address}</td>
                   <td>{hospital.available_capacity_dose1}</td>
@@ -73,7 +70,7 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    console.log("Inside getStates");
+    // console.log("Inside getStates");
     fetch("https://cdn-api.co-vin.in/api/v2/admin/location/states", {
       method: "GET",
       headers: {
@@ -90,7 +87,6 @@ class App extends React.Component {
             return { label: state.state_name, value: state.state_id };
           }),
         });
-        console.log(this.state.state_list);
       })
       .catch((err) => {
         console.log(err);
@@ -98,9 +94,8 @@ class App extends React.Component {
   }
 
   getHospitals(district_id) {
-    console.log("Inside getDistricts");
+    // console.log("Inside getDistricts");
     let url = `https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/findByDistrict?district_id=${district_id}&date=${selected_date}`;
-    console.log(url);
     fetch(url, {
       method: "GET",
       headers: {
@@ -109,20 +104,9 @@ class App extends React.Component {
     })
       .then((response) => response.json())
       .then((data) => {
-        // districts = data[0];
-        console.log(data.sessions);
         this.setState({
           sessions_list: data.sessions,
         });
-        // this.setState({
-        //   district_list: data.districts.map((state) => {
-        //     return {
-        //       label: state.district_name,
-        //       value: state.district_id,
-        //     };
-        //   }),
-        // });
-        // console.log(this.state.district_list);
       })
       .catch((err) => {
         console.log(err);
@@ -130,9 +114,8 @@ class App extends React.Component {
   }
 
   getDistricts(state_id) {
-    console.log("Inside getDistricts");
+    // console.log("Inside getDistricts");
     let url = `https://cdn-api.co-vin.in/api/v2/admin/location/districts/${state_id}`;
-    console.log(url);
     fetch(url, {
       method: "GET",
       headers: {
@@ -141,17 +124,15 @@ class App extends React.Component {
     })
       .then((response) => response.json())
       .then((data) => {
-        districts = data[0];
-        console.log(districts);
         this.setState({
-          district_list: data.districts.map((state) => {
+          district_list: data.districts.map((district) => {
             return {
-              label: state.district_name,
-              value: state.district_id,
+              label: district.district_name,
+              value: district.district_id,
             };
           }),
         });
-        console.log(this.state.district_list);
+        // console.log(this.state.district_list);
       })
       .catch((err) => {
         console.log(err);
@@ -160,11 +141,10 @@ class App extends React.Component {
 
   handleChange(changeObject) {
     this.setState(changeObject, () => {
-      console.log(this.state.selected_state.label);
+      // console.log(this.state.selected_state.label);
       const state = states.filter((obj) => {
         return obj.state_name === this.state.selected_state.label;
       });
-      console.log(state[0].state_id);
       this.getDistricts(state[0].state_id);
     });
   }
@@ -174,10 +154,13 @@ class App extends React.Component {
     this.setState({
       showComponent: true,
     });
-    this.getHospitals(this.state.selected_district, () => {
-      console.log(e);
-      console.log(this.state);
-    });
+    this.getHospitals(
+      this.state.selected_district
+      // , () => {
+      // console.log(e);
+      // console.log(this.state);
+      // }
+    );
   }
 
   render() {
@@ -188,7 +171,7 @@ class App extends React.Component {
           <Select
             placeholder={this.state.selected_state.label}
             onChange={(selectedOption) => {
-              console.log("State Chosen ", selectedOption);
+              // console.log("State Chosen ", selectedOption);
               this.handleChange({ selected_state: selectedOption });
             }}
             options={this.state.state_list}
@@ -197,7 +180,7 @@ class App extends React.Component {
           <Select
             placeholder={this.state.selected_district.label}
             onChange={(selectedOption) => {
-              console.log(selectedOption);
+              // console.log(selectedOption);
               this.setState({ selected_district: selectedOption.value }, () => {
                 console.log(`District selected:`, this.state.selected_district);
               });
@@ -206,13 +189,6 @@ class App extends React.Component {
           />
           <label>Choose a Date</label>
           <SelectDate />
-          {/* <StyledButton
-          type="submit"
-          value="Submit"
-          onClick={() => {
-            this.getHospitals(this.state.selected_district);
-          }
-        /> */}
           <button onClick={this.buttonClick.bind(this)}> Submit </button>
         </form>
 
