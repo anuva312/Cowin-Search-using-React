@@ -1,17 +1,32 @@
 import React, { useState } from "react";
-import "./styles.css";
 import Select from "react-select";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import "bootstrap/dist/css/bootstrap.css";
+import "./styles.css";
 
 let states = [];
 let selected_date = new Date().toLocaleDateString("en-GB").split(",")[0];
 
+const customStyles = {
+  option: (provided, state) => ({
+    ...provided,
+    borderBottom: "2px #002060",
+    color: state.isSelected ? "white" : "black",
+  }),
+  control: (provided) => ({
+    ...provided,
+    margin: "2%",
+  }),
+};
+
 const SelectDate = () => {
-  const [startDate, setDate] = useState(new Date());
+  const [startDate, setDate] = useState(false);
   return (
     <DatePicker
       selected={startDate}
+      placeholderText="Choose a date"
+      wrapperClassName="datePicker"
       onChange={(date) => {
         selected_date = date.toLocaleString("en-GB").split(",")[0];
         // console.log(selected_date);
@@ -89,6 +104,7 @@ class App extends React.Component {
         });
       })
       .catch((err) => {
+        // TODO: Handle possible errors
         console.log(err);
       });
   }
@@ -154,48 +170,60 @@ class App extends React.Component {
     this.setState({
       showComponent: true,
     });
-    this.getHospitals(
-      this.state.selected_district
-      // , () => {
-      // console.log(e);
-      // console.log(this.state);
-      // }
-    );
+    this.getHospitals(this.state.selected_district, () => {
+      console.log(e);
+      console.log(this.state);
+    });
   }
 
   render() {
     return (
       <div>
-        <form>
-          <label>Choose a State</label>
+        {/* <div> */}
+        <form className="session-form col-lg-4 col-md-6 col-sm-12 col-xs-12">
+          <div>
+            <Select
+              className="dropdown-select"
+              styles={customStyles}
+              placeholder="Choose a State"
+              onChange={(selectedOption) => {
+                // console.log("State Chosen ", selectedOption);
+                this.handleChange({ selected_state: selectedOption });
+              }}
+              options={this.state.state_list}
+              autoFocus={true}
+              isSearchable
+            />
+          </div>
           <Select
-            placeholder={this.state.selected_state.label}
-            onChange={(selectedOption) => {
-              // console.log("State Chosen ", selectedOption);
-              this.handleChange({ selected_state: selectedOption });
-            }}
-            options={this.state.state_list}
-          />
-          <label>Choose a District</label>
-          <Select
-            placeholder={this.state.selected_district.label}
+            className="dropdown-select"
+            styles={customStyles}
+            placeholder="Choose a District"
             onChange={(selectedOption) => {
               // console.log(selectedOption);
               this.setState({ selected_district: selectedOption.value }, () => {
                 console.log(`District selected:`, this.state.selected_district);
               });
             }}
+            isSearchable
             options={this.state.district_list}
           />
-          <label>Choose a Date</label>
+
           <SelectDate />
-          <button onClick={this.buttonClick.bind(this)}> Submit </button>
+          <button
+            className="submit-button"
+            onClick={this.buttonClick.bind(this)}
+          >
+            {" "}
+            Submit{" "}
+          </button>
         </form>
 
-        {this.state.showComponent && this.state.sessions_list && (
-          <Sessions info={this.state.sessions_list}></Sessions>
-        )}
-        {/* <Sessions info={this.state.sessions}></Sessions>; */}
+        <section className="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+          {this.state.showComponent && this.state.sessions_list && (
+            <Sessions info={this.state.sessions_list}></Sessions>
+          )}
+        </section>
       </div>
     );
   }
