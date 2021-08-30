@@ -8,6 +8,8 @@
   border: 0;
   min-height: 70px;
   padding-top: 20px;
+  position: absolute;
+  width: 100%;
 }
 
 .brand-heading {
@@ -15,26 +17,16 @@
   padding: 0px;
   padding-left: 10px;
   font-weight: bold;
-  /* text-align: center; */
   font-size: 175%;
 }
-/* .navbar-brand .brand-heading a:hover,
-.navbar-brand .brand-heading a:focus {
-  text-decoration: none;
-} */
 
 body {
   margin: 0;
-  /* width: 100vw; */
-  /* height: 100vh; */
-  /* display: flex; */
   align-items: center;
   text-align: center;
   justify-content: center;
   place-items: center;
-  /* overflow: hidden; */
   font-family: poppins;
-  /* background: #ecf0f3; */
   background-color: white;
 }
 
@@ -51,15 +43,11 @@ body {
   border: none;
   outline: none;
   box-sizing: border-box;
-  /* box-shadow: 6px 6px 6px #cbced1, -6px -6px 6px white; */
-  /* transition: 0.5s; */
 }
 
 .dropdown-select {
   padding: 10px 15px;
   border-radius: 20px;
-  /* text-transform: uppercase;
-  font-weight: 400; */
 }
 
 .session-form {
@@ -68,14 +56,13 @@ body {
   justify-content: center;
   place-items: center;
   overflow: hidden;
-  /* width: 50%; */
   height: 500px;
-  /* border-radius: 40px; */
   padding: 60px;
-  /* box-sizing: border-box; */
-  /* background: "white"; */
-  /* background: #ecf0f3; */
-  /* box-shadow: 14px 14px 20px #cbced1, -14px -14px 20px white; */
+  margin-top: 80px;
+}
+
+section {
+  margin-top: 80px;
 }
 
 .react-datepicker__input-container input {
@@ -105,9 +92,7 @@ body {
 @media (min-width: 801px) {
   .col-lg-6 {
     float: left;
-    /* border: 1px solid black; */
     width: 50%;
-    /* height: 608px; */
   }
 }
 
