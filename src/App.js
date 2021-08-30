@@ -28,7 +28,7 @@ function App() {
   const [showComponent, setComponent] = React.useState(false);
   const [valid, setValidity] = React.useState(false);
   const [message, setMessage] = React.useState(
-    "Please select valid details to check your nearest vaccination center and slots availability"
+    "Please select valid details to check your nearest vaccination center and slots availability!"
   );
 
   // Error handler for unable to fetch data
@@ -113,7 +113,7 @@ function App() {
   // Handling change of State names
   function handleChangeState(changeObject) {
     setStateId(changeObject.value);
-    setMessage("Please select a valid district");
+    setMessage("Please select a valid district!");
     setDistrictId("");
     setSessionsList([]);
     setValidity(false);
@@ -123,7 +123,9 @@ function App() {
   function handleChangeDistrict(changeObject) {
     setDistrictId(changeObject.value);
     setValidity(true);
-    setMessage("Choose a date and click Submit button to check availability!");
+    setMessage(
+      "Please choose a date and click Submit button to check availability!"
+    );
   }
 
   // Handling clicking of Submit button
@@ -195,7 +197,7 @@ function App() {
         {showComponent && sessions_list.length && valid && selected_date ? (
           <div>
             <table className="table table-striped ">
-              <thead className="thead-dark">
+              <thead>
                 <tr>
                   <th>Hospital Name</th>
                   <th>Address</th>
