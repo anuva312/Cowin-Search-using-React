@@ -31,16 +31,26 @@ function App() {
     "Check Your Nearest Vaccination Center And Slots Availability"
   );
 
-  //Getting States
-  React.useEffect(() => {
-    // console.log("Inside getStates");
-    fetch("https://cdn-api.co-vin.in/api/v2/admin/location/states", {
+  // Error handler for unable to fetch data
+  function handleError(err) {
+    console.log(err);
+    setMessage(<p className="error">Sorry😢 Something went wrong 💥</p>);
+  }
+
+  // Function for fetching data using API
+  function fetchData(url) {
+    return fetch(url, {
       method: "GET",
       headers: {
         accept: "application/json",
       },
-    })
-      .then((response) => response.json())
+    }).then((response) => response.json());
+  }
+
+  //Getting States
+  React.useEffect(() => {
+    const url = "https://cdn-api.co-vin.in/api/v2/admin/location/states";
+    fetchData(url)
       .then((data) => {
         setStateList(
           data.states.map((state) => {
@@ -49,24 +59,15 @@ function App() {
         );
       })
       .catch((err) => {
-        // TODO: Handle possible errors
-        console.log(err);
-        setMessage(<p className="error">Sorry😢 Something went wrong 💥</p>);
+        handleError(err);
       });
   }, []);
 
   //Getting Districts
   React.useEffect(() => {
     if (selected_state_id) {
-      // console.log("Inside getDistricts");
       let url = `https://cdn-api.co-vin.in/api/v2/admin/location/districts/${selected_state_id}`;
-      fetch(url, {
-        method: "GET",
-        headers: {
-          accept: "application/json",
-        },
-      })
-        .then((response) => response.json())
+      fetchData(url)
         .then((data) => {
           setDistrictList(
             data.districts.map((district) => {
@@ -78,8 +79,7 @@ function App() {
           );
         })
         .catch((err) => {
-          console.log(err);
-          setMessage(<p className="error">Sorry😢 Something went wrong 💥</p>);
+          handleError(err);
         });
     }
   }, [selected_state_id]);
@@ -87,7 +87,6 @@ function App() {
   //Getting Available Sessions and their details
   React.useEffect(() => {
     if (selected_district_id && selected_date && valid) {
-      // console.log("Inside getSessions");
       let date_string = selected_date.toLocaleString("en-GB").split(",")[0];
       console.log(
         "Selected District: ",
@@ -96,26 +95,18 @@ function App() {
         date_string
       );
       let url = `https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/findByDistrict?district_id=${selected_district_id}&date=${date_string}`;
-      fetch(url, {
-        method: "GET",
-        headers: {
-          accept: "application/json",
-        },
-      })
-        .then((response) => response.json())
+      fetchData(url)
         .then((data) => {
           setSessionsList(data.sessions);
         })
         .catch((err) => {
-          console.log(err);
-          setMessage(<p className="error">Sorry😢 Something went wrong 💥</p>);
+          handleError(err);
         });
     }
   }, [selected_district_id, selected_date, valid]);
 
   // If any of the inputs change, table should be reset
   useEffect(() => {
-    // console.log("--Setting show component to false--");
     setComponent(false);
   }, [selected_date, selected_district_id]);
 
@@ -123,7 +114,6 @@ function App() {
   function handleChangeState(changeObject) {
     setStateId(changeObject.value);
     setMessage("Please select a valid district");
-    // console.log("Resetting district value");
     setDistrictId("");
     setSessionsList([]);
     setValidity(false);
@@ -203,30 +193,32 @@ function App() {
       {/* Table show available vaccination sessions */}
       <section className="col-lg-6 col-md-12">
         {showComponent && sessions_list.length && valid && selected_date ? (
-          <table className="table table-striped">
-            <thead className="thead-dark">
-              <tr>
-                <th>Hospital Name</th>
-                <th>Address</th>
-                <th>Available Capacity Dose 1</th>
-                <th>Available Capacity Dose 2</th>
-                <th>Vaccine Name</th>
-              </tr>
-            </thead>
-            <tbody>
-              {sessions_list.map((hospital) => {
-                return (
-                  <tr key={hospital.session_id}>
-                    <td>{hospital.name}</td>
-                    <td>{hospital.address}</td>
-                    <td>{hospital.available_capacity_dose1}</td>
-                    <td>{hospital.available_capacity_dose2}</td>
-                    <td>{hospital.vaccine}</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+          <div>
+            <table className="table table-striped ">
+              <thead className="thead-dark">
+                <tr>
+                  <th>Hospital Name</th>
+                  <th>Address</th>
+                  <th>Available Capacity Dose 1</th>
+                  <th>Available Capacity Dose 2</th>
+                  <th>Vaccine Name</th>
+                </tr>
+              </thead>
+              <tbody>
+                {sessions_list.map((hospital) => {
+                  return (
+                    <tr key={hospital.session_id}>
+                      <td>{hospital.name}</td>
+                      <td>{hospital.address}</td>
+                      <td>{hospital.available_capacity_dose1}</td>
+                      <td>{hospital.available_capacity_dose2}</td>
+                      <td>{hospital.vaccine}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
         ) : showComponent && valid && selected_date ? (
           <div className="message">"Sorry! No sessions available😢"</div>
         ) : (
