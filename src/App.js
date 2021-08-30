@@ -28,7 +28,7 @@ function App() {
   const [showComponent, setComponent] = React.useState(false);
   const [valid, setValidity] = React.useState(false);
   const [message, setMessage] = React.useState(
-    "Check Your Nearest Vaccination Center And Slots Availability"
+    "Please select valid details to check your nearest vaccination center and slots availability"
   );
 
   // Error handler for unable to fetch data
@@ -108,7 +108,7 @@ function App() {
   // If any of the inputs change, table should be reset
   useEffect(() => {
     setComponent(false);
-  }, [selected_date, selected_district_id]);
+  }, [selected_state_id, selected_date, selected_district_id]);
 
   // Handling change of State names
   function handleChangeState(changeObject) {
@@ -221,9 +221,9 @@ function App() {
           </div>
         ) : showComponent && valid && selected_date ? (
           <div className="message">"Sorry! No sessions available😢"</div>
-        ) : (
+        ) : showComponent ? (
           <div className="message"> {message} </div>
-        )}
+        ) : null}
       </section>
     </div>
   );
