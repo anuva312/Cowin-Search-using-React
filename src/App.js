@@ -5,6 +5,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import "bootstrap/dist/css/bootstrap.css";
 import "./styles.css";
 
+// Custom-Styles for Select Component
 const customStyles = {
   option: (provided, state) => ({
     ...provided,
@@ -23,11 +24,11 @@ function App() {
   const [selected_district_id, setDistrictId] = React.useState("");
   const [district_list, setDistrictList] = React.useState([]);
   const [sessions_list, setSessionsList] = React.useState([]);
-  const [selected_date, setDate] = useState(false);
+  const [selected_date, setDate] = useState(undefined);
   const [showComponent, setComponent] = React.useState(false);
   const [valid, setValidity] = React.useState(true);
   const [message, setMessage] = React.useState(
-    "Please input valid details to check availability"
+    "Check Your Nearest Vaccination Center And Slots Availability"
   );
 
   //Getting States
@@ -86,12 +87,12 @@ function App() {
     if (selected_district_id && selected_date && valid) {
       // console.log("Inside getSessions");
       let date_string = selected_date.toLocaleString("en-GB").split(",")[0];
-      // console.log(
-      //   "Selected District: ",
-      //   selected_district_id,
-      //   " Selected date: ",
-      //   date_string
-      // );
+      console.log(
+        "Selected District: ",
+        selected_district_id,
+        " Selected date: ",
+        date_string
+      );
       let url = `https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/findByDistrict?district_id=${selected_district_id}&date=${date_string}`;
       fetch(url, {
         method: "GET",
@@ -138,9 +139,11 @@ function App() {
     setComponent(true);
   }
 
+  //To render
   return (
     <div>
-      <form className="session-form col-lg-4 col-md-6 col-sm-12 col-xs-12">
+      <form className="session-form col-lg-6 col-md-12">
+        {/* Select State */}
         <div>
           <Select
             className="dropdown-select"
@@ -155,6 +158,8 @@ function App() {
             isSearchable
           />
         </div>
+
+        {/* Select District */}
         <div>
           <Select
             className="dropdown-select"
@@ -162,7 +167,7 @@ function App() {
             required="true"
             placeholder="Choose a District"
             onChange={(selectedOption) => {
-              console.log("District chosen: ", selectedOption.label);
+              // console.log("District chosen: ", selectedOption.label);
               handleChangeDistrict(selectedOption);
             }}
             options={district_list}
@@ -170,25 +175,33 @@ function App() {
           />
         </div>
 
-        <DatePicker
-          selected={selected_date}
-          placeholderText="Choose a date"
-          wrapperClassName="datePicker"
-          onChange={(date) => {
-            setDate(date);
-          }}
-          dateFormat="dd/MM/yyyy"
-        />
-        <button className="submit-button" onClick={buttonClick.bind(this)}>
-          {" "}
-          Submit{" "}
-        </button>
+        {/* Select Date */}
+        <div>
+          <DatePicker
+            selected={selected_date}
+            placeholderText="Choose a date"
+            wrapperClassName="datePicker"
+            onChange={(date) => {
+              setDate(date);
+            }}
+            dateFormat="dd/MM/yyyy"
+          />
+        </div>
+
+        {/* Submit Button */}
+        <div>
+          <button className="submit-button" onClick={buttonClick.bind(this)}>
+            {" "}
+            Submit{" "}
+          </button>
+        </div>
       </form>
 
-      <section className="col-lg-4 col-md-6 col-sm-12 col-xs-12">
-        {showComponent && sessions_list.length && valid ? (
+      {/* Table show available vaccination sessions */}
+      <section className="col-lg-6 col-md-12">
+        {showComponent && sessions_list.length && valid && selected_date ? (
           <table className="table table-striped">
-            <thead>
+            <thead className="thead-dark">
               <tr>
                 <th>Hospital Name</th>
                 <th>Address</th>
@@ -198,7 +211,6 @@ function App() {
               </tr>
             </thead>
             <tbody>
-              {/* TODO: If no info show a message saying so */}
               {sessions_list.map((hospital) => {
                 return (
                   <tr key={hospital.session_id}>
@@ -212,8 +224,8 @@ function App() {
               })}
             </tbody>
           </table>
-        ) : showComponent && valid ? (
-          "Sorry! No sessions available😢"
+        ) : showComponent && valid && selected_date ? (
+          <div className="message">"Sorry! No sessions available😢"</div>
         ) : (
           <div className="message"> {message} </div>
         )}

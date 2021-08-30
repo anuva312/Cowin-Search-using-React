@@ -89,17 +89,17 @@ body {
   margin: 12px;
 }
 
-/* .datePicker {
-  width: 100%;
-  border-color: hsl(0, 0%, 80%);
-  border-radius: 4px;
-  border-style: solid;
-  border-width: 1px;
-} */
+.message {
+  margin: auto;
+  margin-top: 25%;
+  padding: 20px;
+  color: #002060;
+  font-size: 125%;
+}
 
 /********** Large devices only **********/
-@media (min-width: 992px) {
-  .col-lg-4 {
+@media (min-width: 801px) {
+  .col-lg-6 {
     float: left;
     /* border: 1px solid black; */
     width: 50%;
@@ -108,19 +108,9 @@ body {
 }
 
 /********** Medium devices only **********/
-@media (min-width: 768px) and (max-width: 991px) {
-  .col-md-6,
+@media (max-width: 800px) {
   .col-md-12 {
     float: left;
-    /* height: 608px; */
-    /* border: 1px solid black; */
-  }
-
-  .col-md-6 {
-    width: 50%;
-  }
-
-  .col-md-12 {
     width: 100%;
   }
 }
