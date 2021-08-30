@@ -26,7 +26,7 @@ function App() {
   const [sessions_list, setSessionsList] = React.useState([]);
   const [selected_date, setDate] = useState(undefined);
   const [showComponent, setComponent] = React.useState(false);
-  const [valid, setValidity] = React.useState(true);
+  const [valid, setValidity] = React.useState(false);
   const [message, setMessage] = React.useState(
     "Check Your Nearest Vaccination Center And Slots Availability"
   );
@@ -51,6 +51,7 @@ function App() {
       .catch((err) => {
         // TODO: Handle possible errors
         console.log(err);
+        setMessage(<p className="error">Sorry😢 Something went wrong 💥</p>);
       });
   }, []);
 
@@ -78,6 +79,7 @@ function App() {
         })
         .catch((err) => {
           console.log(err);
+          setMessage(<p className="error">Sorry😢 Something went wrong 💥</p>);
         });
     }
   }, [selected_state_id]);
@@ -106,6 +108,7 @@ function App() {
         })
         .catch((err) => {
           console.log(err);
+          setMessage(<p className="error">Sorry😢 Something went wrong 💥</p>);
         });
     }
   }, [selected_district_id, selected_date, valid]);
@@ -129,7 +132,7 @@ function App() {
   // Handling change of District names
   function handleChangeDistrict(changeObject) {
     setDistrictId(changeObject.value);
-    setValidity("true");
+    setValidity(true);
     setMessage("Choose a date and click Submit button to check availability!");
   }
 

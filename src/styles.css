@@ -97,6 +97,10 @@ body {
   font-size: 125%;
 }
 
+.error {
+  color: tomato;
+}
+
 /********** Large devices only **********/
 @media (min-width: 801px) {
   .col-lg-6 {
