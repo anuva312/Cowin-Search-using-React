@@ -29,6 +29,10 @@ body {
   background-color: white;
 }
 
+form {
+  margin-top: 15px;
+}
+
 .submit-button {
   color: #ecf0f3;
   margin-top: 20px;
@@ -79,11 +83,14 @@ td {
 
 .message {
   margin: auto;
-  margin-top: 15%;
   padding: 20px;
-  color: #002060;
   font-size: 125%;
   color: red;
+}
+
+#info-message {
+  color: #002060;
+  margin-top: 20px;
 }
 
 .error {
