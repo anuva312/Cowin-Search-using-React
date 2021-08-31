@@ -49,6 +49,11 @@ form {
   box-sizing: border-box;
 }
 
+.dropdown-select {
+  padding: 10px 15px;
+  border-radius: 20px;
+}
+
 .session-form {
   align-items: center;
   text-align: center;
