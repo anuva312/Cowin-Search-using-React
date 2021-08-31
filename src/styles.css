@@ -31,6 +31,7 @@ body {
 
 form {
   margin-top: 15px;
+  margin-bottom: 15px;
 }
 
 .submit-button {
@@ -46,11 +47,6 @@ form {
   border: none;
   outline: none;
   box-sizing: border-box;
-}
-
-.dropdown-select {
-  padding: 10px 15px;
-  border-radius: 20px;
 }
 
 .session-form {
