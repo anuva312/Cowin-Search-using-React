@@ -18,6 +18,17 @@ const customStyles = {
   }),
 };
 
+// Component to show Intro-Message
+function InfoMessage() {
+  return (
+    <div className="message" id="info-message">
+      <h2>Are You Protected Against Covid?</h2>
+      <h3>Check Your Nearest Vaccination Center And Slots Availability</h3>
+      Please give details to Search By District!
+    </div>
+  );
+}
+
 function App() {
   const [state_list, setStateList] = React.useState([]);
   const [selected_state_id, setStateId] = React.useState("");
@@ -27,9 +38,7 @@ function App() {
   const [selected_date, setDate] = useState(undefined);
   const [showComponent, setComponent] = React.useState(false);
   const [valid, setValidity] = React.useState(false);
-  const [message, setMessage] = React.useState(
-    "Please select valid details to check your nearest vaccination center and slots availability!"
-  );
+  const [message, setMessage] = React.useState("Please select valid details!");
 
   // Error handler for unable to fetch data
   function handleError(err) {
@@ -45,6 +54,38 @@ function App() {
         accept: "application/json",
       },
     }).then((response) => response.json());
+  }
+
+  //Component to show available Session's details in a table
+  function ShowTable() {
+    return (
+      <div>
+        <table className="table table-striped ">
+          <thead>
+            <tr>
+              <th>Hospital Name</th>
+              <th>Address</th>
+              <th>Available Capacity Dose 1</th>
+              <th>Available Capacity Dose 2</th>
+              <th>Vaccine Name</th>
+            </tr>
+          </thead>
+          <tbody>
+            {sessions_list.map((hospital) => {
+              return (
+                <tr key={hospital.session_id}>
+                  <td>{hospital.name}</td>
+                  <td>{hospital.address}</td>
+                  <td>{hospital.available_capacity_dose1}</td>
+                  <td>{hospital.available_capacity_dose2}</td>
+                  <td>{hospital.vaccine}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    );
   }
 
   //Getting States
@@ -137,95 +178,75 @@ function App() {
   //To render
   return (
     <div>
-      <form className="session-form col-lg-6 col-md-12">
-        {/* Select State */}
-        <div>
-          <Select
-            className="dropdown-select"
-            styles={customStyles}
-            placeholder="Choose a State"
-            onChange={(selectedOption) => {
-              console.log("State Chosen ", selectedOption.label);
-              handleChangeState(selectedOption);
-            }}
-            options={state_list}
-            autoFocus={true}
-            isSearchable
-          />
-        </div>
+      <section className="col-lg-6 col-md-12">
+        <form>
+          {/* Select State */}
+          <div>
+            <Select
+              className="dropdown-select"
+              styles={customStyles}
+              placeholder="Choose a State"
+              onChange={(selectedOption) => {
+                console.log("State Chosen ", selectedOption.label);
+                handleChangeState(selectedOption);
+              }}
+              options={state_list}
+              autoFocus={true}
+              isSearchable
+            />
+          </div>
 
-        {/* Select District */}
-        <div>
-          <Select
-            className="dropdown-select"
-            styles={customStyles}
-            required="true"
-            placeholder="Choose a District"
-            onChange={(selectedOption) => {
-              // console.log("District chosen: ", selectedOption.label);
-              handleChangeDistrict(selectedOption);
-            }}
-            options={district_list}
-            isSearchable
-          />
-        </div>
+          {/* Select District */}
+          <div>
+            <Select
+              className="dropdown-select"
+              styles={customStyles}
+              required="true"
+              placeholder="Choose a District"
+              onChange={(selectedOption) => {
+                // console.log("District chosen: ", selectedOption.label);
+                handleChangeDistrict(selectedOption);
+              }}
+              options={district_list}
+              isSearchable
+            />
+          </div>
 
-        {/* Select Date */}
-        <div>
-          <DatePicker
-            selected={selected_date}
-            placeholderText="Choose a date"
-            wrapperClassName="datePicker"
-            onChange={(date) => {
-              setDate(date);
-            }}
-            dateFormat="dd/MM/yyyy"
-          />
-        </div>
+          {/* Select Date */}
+          <div>
+            <DatePicker
+              selected={selected_date}
+              placeholderText="Choose a date"
+              wrapperClassName="datePicker"
+              onChange={(date) => {
+                setDate(date);
+              }}
+              dateFormat="dd/MM/yyyy"
+            />
+          </div>
 
-        {/* Submit Button */}
-        <div>
-          <button className="submit-button" onClick={buttonClick.bind(this)}>
-            {" "}
-            Submit{" "}
-          </button>
-        </div>
-      </form>
+          {/* Submit Button */}
+          <div>
+            <button className="submit-button" onClick={buttonClick.bind(this)}>
+              {" "}
+              Submit{" "}
+            </button>
+          </div>
+        </form>
+        {showComponent && (!valid || !selected_date) ? (
+          <div className="message"> {message} </div>
+        ) : null}
+      </section>
 
       {/* Table show available vaccination sessions */}
       <section className="col-lg-6 col-md-12">
         {showComponent && sessions_list.length && valid && selected_date ? (
-          <div>
-            <table className="table table-striped ">
-              <thead>
-                <tr>
-                  <th>Hospital Name</th>
-                  <th>Address</th>
-                  <th>Available Capacity Dose 1</th>
-                  <th>Available Capacity Dose 2</th>
-                  <th>Vaccine Name</th>
-                </tr>
-              </thead>
-              <tbody>
-                {sessions_list.map((hospital) => {
-                  return (
-                    <tr key={hospital.session_id}>
-                      <td>{hospital.name}</td>
-                      <td>{hospital.address}</td>
-                      <td>{hospital.available_capacity_dose1}</td>
-                      <td>{hospital.available_capacity_dose2}</td>
-                      <td>{hospital.vaccine}</td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+          <ShowTable></ShowTable>
         ) : showComponent && valid && selected_date ? (
           <div className="message">"Sorry! No sessions available😢"</div>
-        ) : showComponent ? (
-          <div className="message"> {message} </div>
-        ) : null}
+        ) : (
+          <InfoMessage></InfoMessage>
+        )}
       </section>
     </div>
   );
